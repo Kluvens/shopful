@@ -15,7 +15,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Accessors(chain = true)
 @Document(collection = "products")
-public class Product implements Serializable {
+public class Product extends AuditTimeMetadata implements Serializable {
     @Id
     private String id;
 
