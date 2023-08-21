@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 import com.unsw.shopful.repository.UserRepository;
@@ -26,6 +27,10 @@ public class UserService {
             return userMapper.toDto(user.get());
         }
         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "user not found");
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
     }
 
     public User createUser(String username, String email, String password) {

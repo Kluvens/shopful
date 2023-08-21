@@ -7,9 +7,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 public abstract class AuditTimeMetadata {
     
     @CreatedDate

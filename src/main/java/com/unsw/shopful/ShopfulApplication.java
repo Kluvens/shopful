@@ -8,11 +8,10 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 
 @SpringBootApplication
-@EnableCaching
 @EnableMongoAuditing
 public class ShopfulApplication {
 
-	public static final Logger log = LoggerFactory.getLogger(ShopfulApplication.class);
+	public static final Logger logger = LoggerFactory.getLogger(ShopfulApplication.class);
 	public static void main(String[] args) {
 		SpringApplication.run(ShopfulApplication.class, args);
 	}

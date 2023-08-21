@@ -1,8 +1,9 @@
 package com.unsw.shopful.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,11 @@ public class UserController {
         return userService.findByEmail(email);
     }
 
+    @GetMapping("/all")
+    public List<User> getUsers() {
+        return userService.getAllUsers();
+    }
+
     @PostMapping
     public User creatUser(@RequestBody CreateUserRequest createUserRequest) {
         String username = createUserRequest.getUsername();
@@ -33,4 +39,9 @@ public class UserController {
 
         return userService.createUser(username, email, password);
     }
+
+    // @PostMapping("/saveProduct")
+    // public User saveProduct(@RequestParam String userId, @RequestParam String productId) {
+    //     return userService.saveProduct(userId, productId);
+    // }
 }
