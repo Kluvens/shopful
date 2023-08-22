@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
+import com.unsw.shopful.ShopfulApplication;
 import com.unsw.shopful.dto.ProductDTO;
 import com.unsw.shopful.exception.NotFoundException;
 import com.unsw.shopful.mapper.ProductMapper;
@@ -17,6 +19,8 @@ import com.unsw.shopful.repository.ProductRepository;
 
 @Service
 public class ProductService {
+
+    private static final Logger logger = ShopfulApplication.logger;
     
     @Autowired
     private ProductRepository productRepository;
@@ -26,6 +30,9 @@ public class ProductService {
 
     @CacheEvict(cacheNames = "products", allEntries = true)
     public Product createProduct(String productName) {
+
+        logger.info("Creating a product ...");
+
         Product newProduct = new Product()
             .setProductName(productName);
 
@@ -34,11 +41,17 @@ public class ProductService {
 
     @Cacheable(cacheNames = "products")
     public List<Product> getAllProducts() {
+
+        logger.info("Getting all products ...");
+
         return productRepository.findAll();
     }
 
     @CacheEvict(cacheNames = "products", allEntries = true)
     public Product deleteProduct(String id) throws Exception {
+
+        logger.info("Deleting a product ...");
+        
         Optional<Product> product = productRepository.findById(id);
 
         if (product.isPresent()) {

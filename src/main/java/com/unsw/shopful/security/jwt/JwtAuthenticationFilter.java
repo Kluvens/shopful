@@ -20,6 +20,8 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private static final Logger logger = ShopfulApplication.logger;
     
     @Autowired
     private JwtUtil jwtUtil;
@@ -27,14 +29,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    private static final Logger logger = ShopfulApplication.logger;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) 
             throws ServletException, IOException {
         try {
+
+            logger.info("Doing filter internal ...");
+
             String jwt = parseJwtFromRequest(request);
-            if (jwt != null && jwtUtil.validToken(jwt)) {
+            if (jwt != null && jwtUtil.isValidToken(jwt)) {
                 String username = jwtUtil.getUserNameFromJwtToken(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -54,6 +57,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private String parseJwtFromRequest(HttpServletRequest request) {
+
+        logger.info("Parsing JWT from request ...");
+
         String header = request.getHeader("Authorization");
         if (header != null && header.startsWith("Bearer ")) {
             return header.substring(7);

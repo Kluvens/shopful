@@ -25,11 +25,11 @@ import com.unsw.shopful.service.ProductService;
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
+
+    private static final Logger logger = ShopfulApplication.logger;
     
     @Autowired
     private ProductService productService;
-
-    private static final Logger logger = ShopfulApplication.logger;
 
     @PostMapping
     public Product createProduct(@RequestBody CreateProductRequest createProductRequest) {

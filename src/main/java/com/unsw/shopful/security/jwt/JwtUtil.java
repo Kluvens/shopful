@@ -28,6 +28,8 @@ public class JwtUtil {
 
     public String generateJwtToken(Authentication authentication) {
 
+        logger.info("Generating JWT token ...");
+
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
         return Jwts.builder()
@@ -43,11 +45,17 @@ public class JwtUtil {
     }
 
     public String getUserNameFromJwtToken(String token) {
+
+        logger.info("Getting username from JWT token ...");
+        
         return Jwts.parserBuilder().setSigningKey(key()).build()
                    .parseClaimsJws(token).getBody().getSubject();
     }    
 
-    public Boolean validToken(String authToken) {
+    public Boolean isValidToken(String authToken) {
+
+        logger.info("Checking if token is valid ...");
+
         try {
             Jwts.parserBuilder().setSigningKey(key()).build().parse(authToken);
             return true;

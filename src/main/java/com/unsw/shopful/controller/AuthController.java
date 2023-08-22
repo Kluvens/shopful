@@ -47,7 +47,7 @@ public class AuthController {
         String username = createUserRequest.getUsername();
         String email = createUserRequest.getEmail();
         String password = passwordEncoder.encode(createUserRequest.getPassword());
-        logger.warn(password);
+        logger.info("Password: " + password);
 
         try {
             authService.register(username, email, password);
@@ -60,12 +60,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 
-        logger.debug("Logging in ...");
+        logger.info("Logging in ...");
+
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
         );
-
-        logger.debug(authentication.getPrincipal().toString());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtil.generateJwtToken(authentication);

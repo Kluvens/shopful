@@ -13,6 +13,8 @@ public class ShopfulApplication {
 
 	public static final Logger logger = LoggerFactory.getLogger(ShopfulApplication.class);
 	public static void main(String[] args) {
+
+		logger.info("Starting application ...");
 		SpringApplication.run(ShopfulApplication.class, args);
 	}
 

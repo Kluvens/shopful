@@ -1,5 +1,6 @@
 package com.unsw.shopful.service;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,11 +11,15 @@ import java.util.Optional;
 
 import com.unsw.shopful.repository.UserRepository;
 import com.unsw.shopful.model.User;
+import com.unsw.shopful.ShopfulApplication;
 import com.unsw.shopful.dto.UserDTO;
 import com.unsw.shopful.mapper.UserMapper;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = ShopfulApplication.logger;
+
     @Autowired
     private UserRepository userRepository;
 
@@ -30,15 +35,9 @@ public class UserService {
     }
 
     public List<User> getAllUsers() {
+
+        logger.info("Getting all users ...");
+        
         return userRepository.findAll();
-    }
-
-    public User createUser(String username, String email, String password) {
-        User newUser = new User();
-        newUser.setUsername(username);
-        newUser.setEmail(email);
-        newUser.setPassword(password);
-
-        return userRepository.save(newUser);
     }
 }

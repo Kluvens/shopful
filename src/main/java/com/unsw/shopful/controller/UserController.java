@@ -31,15 +31,6 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping
-    public User creatUser(@RequestBody CreateUserRequest createUserRequest) {
-        String username = createUserRequest.getUsername();
-        String email = createUserRequest.getEmail();
-        String password = createUserRequest.getPassword();
-
-        return userService.createUser(username, email, password);
-    }
-
     // @PostMapping("/saveProduct")
     // public User saveProduct(@RequestParam String userId, @RequestParam String productId) {
     //     return userService.saveProduct(userId, productId);

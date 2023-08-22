@@ -1,5 +1,6 @@
 package com.unsw.shopful.security;
 
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.unsw.shopful.ShopfulApplication;
 import com.unsw.shopful.security.jwt.JwtAuthenticationEntryPoint;
 import com.unsw.shopful.security.jwt.JwtAuthenticationFilter;
 import com.unsw.shopful.security.service.UserDetailsServiceImpl;
@@ -23,6 +25,8 @@ import com.unsw.shopful.security.service.UserDetailsServiceImpl;
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = false)
 public class SecurityConfig {
+
+    private static final Logger logger = ShopfulApplication.logger;
 
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
@@ -35,6 +39,9 @@ public class SecurityConfig {
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
+
+        logger.info("Authentication provider ...");
+
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         authProvider.setUserDetailsService(userDetailsService);
@@ -45,11 +52,17 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+
+        logger.info("Authentication manager ...");
+
         return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+        logger.info("Filter chain ...");
+
         return http
         .csrf(csrf -> csrf.disable())
         .exceptionHandling(exception -> exception.authenticationEntryPoint(authenticationEntryPoint))
@@ -61,6 +74,9 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
+        logger.info("Password encoder ...");
+        
         return new BCryptPasswordEncoder();
     }
 }
