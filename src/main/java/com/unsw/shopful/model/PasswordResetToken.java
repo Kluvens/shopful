@@ -1,6 +1,6 @@
 package com.unsw.shopful.model;
 
-import java.io.Serializable;
+import java.util.Date;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -8,20 +8,23 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.experimental.Accessors;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Accessors(chain = true)
-@ToString(callSuper = true)
-@Document(collection = "products")
-public class Product extends AuditTimeMetadata implements Serializable {
+@Document(collection = "password_reset_tokens")
+public class PasswordResetToken {
+    
     @Id
     private String id;
 
-    private String productName;
+    private String token;
+    private String userId;
+    private Date expiryDate;
 
-    private int savedCount = 0;
+    public Boolean isExpired() {
+        return new Date().after(this.expiryDate);
+    }
 }

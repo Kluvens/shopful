@@ -2,9 +2,12 @@ package com.unsw.shopful.model;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import jakarta.validation.constraints.Email;
@@ -36,5 +39,8 @@ public class User extends AuditTimeMetadata implements Serializable {
     private String password;
 
     private Set<Role> roles = new HashSet<>();
+
+    @DBRef
+    private List<Product> likedProducts = new ArrayList<>();
 
 }

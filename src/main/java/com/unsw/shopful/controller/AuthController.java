@@ -16,11 +16,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.unsw.shopful.ShopfulApplication;
 import com.unsw.shopful.dto.LoginDto;
 import com.unsw.shopful.exception.BadRequestException;
+import com.unsw.shopful.exception.NotFoundException;
+import com.unsw.shopful.model.PasswordResetToken;
+import com.unsw.shopful.model.User;
 import com.unsw.shopful.request.CreateUserRequest;
 import com.unsw.shopful.request.LoginRequest;
+import com.unsw.shopful.request.PasswordResetAttemptRequest;
+import com.unsw.shopful.request.PasswordResetRequest;
 import com.unsw.shopful.security.jwt.JwtUtil;
 import com.unsw.shopful.security.service.UserDetailsImpl;
 import com.unsw.shopful.service.AuthService;
+import com.unsw.shopful.service.EmailService;
+import com.unsw.shopful.service.PasswordResetTokenService;
+import com.unsw.shopful.service.UserService;
+import com.unsw.shopful.utils.Utils;
 
 @RestController
 @RequestMapping("/api/authentication")
@@ -39,6 +48,15 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private PasswordResetTokenService passwordResetTokenService;
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody CreateUserRequest createUserRequest) {
@@ -76,5 +94,37 @@ public class AuthController {
             .setUsername(userDetails.getUsername())
             .setEmail(userDetails.getEmail())
         );
+    }
+
+    @PostMapping("/password-reset/request")
+    public ResponseEntity<String> requestPasswordRest(@RequestBody PasswordResetAttemptRequest request) {
+        User user = userService.findByEmail(request.getEmail());
+        String token = Utils.generatePasswordResetToken();
+
+        passwordResetTokenService.createPasswordResetToken(user.getId(), token);
+
+        String resetLink = "http://localhost:3000/reset-password?token=" + token;
+        // String emailContent = "Click the following link to reset your password: " + resetLink;
+        // String subject = "Password reset";
+
+        // emailService.sendEmail(user.getEmail(), subject, emailContent);
+
+        return ResponseEntity.ok(resetLink);
+    }
+
+    @PostMapping("/password-reset/reset")
+    public ResponseEntity<User> resetPassword(@RequestBody PasswordResetRequest request) {
+        PasswordResetToken token = passwordResetTokenService.findbyToken(request.getToken());
+        if (token != null && !token.isExpired()) {
+            try {
+                String newPassword = passwordEncoder.encode(request.getNewPassword());
+                User user = userService.resetPassword(token.getUserId(), newPassword);
+                return ResponseEntity.ok(user);
+            } catch (NotFoundException e) {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

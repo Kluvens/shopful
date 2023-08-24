@@ -1,7 +1,6 @@
 package com.unsw.shopful.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.unsw.shopful.ShopfulApplication;
-import com.unsw.shopful.dto.ProductDTO;
 import com.unsw.shopful.exception.NotFoundException;
 import com.unsw.shopful.mapper.ProductMapper;
 import com.unsw.shopful.model.Product;
@@ -59,6 +57,26 @@ public class ProductService {
             return product.get();
         }
         throw new NotFoundException("Product not found");
+    }
+
+    public Product incrementSavedCount(String productId) {
+        Product product = productRepository.findById(productId).get();
+        int savedCount = product.getSavedCount();
+        product.setSavedCount(savedCount++);
+        productRepository.save(product);
+        return product;
+    }
+
+    public Product decrementSavedCount(String productId) {
+        Product product = productRepository.findById(productId).get();
+        int savedCount = product.getSavedCount();
+        product.setSavedCount(savedCount--);
+        productRepository.save(product);
+        return product;
+    }
+
+    public Optional<Product> findById(String productId) {
+        return productRepository.findById(productId);
     }
 
     // @CacheEvict(cacheNames = "products", allEntries = true)
